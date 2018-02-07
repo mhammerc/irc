@@ -26,6 +26,8 @@
 # define MIN(a, b) ((a > b) ? b : a)
 # define ABS(a)    ((a > 0) ? a : -a)
 
+typedef struct s_app        t_app;
+
 /*
 ** CIRCULAR BUFFER
 */
@@ -46,7 +48,10 @@ void						circular_buffer_destroy(t_circular_buffer *b);
 void						circular_buffer_write(t_circular_buffer *b, char *data, size_t data_size);
 size_t						circular_buffer_read(t_circular_buffer *b, char delimiter, char **result);
 
-
+/*
+** FD MANAGEMENT
+** (clients & server)
+*/
 typedef struct              s_fd_repository
 {
     int                     type;
@@ -54,10 +59,61 @@ typedef struct              s_fd_repository
     void                    (*fct_write)();
 	t_circular_buffer		buf_read;
     char                    buf_write[BUF_SIZE + 1];
-
 }                           t_fd_repository;
 
-typedef struct              s_app
+typedef struct              s_client
+{
+
+}                           t_client;
+
+void						fd_repo_clean(t_fd_repository *fd);
+void            			client_write(t_app *app, int client_fd);
+void            			client_read(t_app *app, int client_fd);
+
+/*
+** IRC MESSAGES PARSER
+** Compliant to RFC 2812
+** https://tools.ietf.org/html/rfc2812#section-2.3
+*/
+typedef struct              s_irc_message_prefix
+{
+    char                    *servername;
+    char                    nickname[9];
+    char                    *user;
+    char                    *host;
+}                           t_irc_message_prefix;
+
+typedef struct              s_irc_message
+{
+    t_irc_message_prefix    prefix;
+    char                    *command;
+    char                    *params[15];
+    size_t                  params_size;
+}                           t_irc_message;
+
+t_irc_message               *irc_message_parse(char *message);
+void                        irc_message_destroy(t_irc_message **message);
+
+/*
+** IRC COMMANDS FUNCTIONS
+*/
+typedef void                (*t_irc_command_func)(t_app *app, int client_fd, t_irc_message *message);
+typedef struct              s_irc_command
+{
+    char                    *name;
+    t_irc_command_func      func;
+}                           t_irc_command;
+
+void                        command_register(t_app *app, char *name, t_irc_command_func func);
+t_irc_command               *command_search(t_app *app, char *name);
+
+void		                command_func_nick(t_app *app, int client_fd);
+void		                command_func_user(t_app *app, int client_fd);
+
+/*
+** MACRO APP MANAGEMENT
+*/
+struct              s_app
 {
     t_fd_repository         *fds;
     int                     port;
@@ -66,22 +122,15 @@ typedef struct              s_app
     int                     r;
     fd_set                  fd_read;
     fd_set                  fd_write;
-}                           t_app;
+    t_list                  *irc_commands;
+};
 
-/*
-** MACRO APP MANAGEMENT
-*/
 void						error(char *str);
 void						init_app(t_app *app);
 t_app    					*get_app();
 
-void						fd_repo_clean(t_fd_repository *fd);
-
 void						server_start(t_app *app);
-
 void						loop_start(t_app *app);
 
-void            			client_write(t_app *app, int client_fd);
-void            			client_read(t_app *app, int client_fd);
 
 #endif

@@ -1,5 +1,5 @@
 C_FLAGS := -Wall -Wextra -Werror
-CC := gcc
+CC := gcc -g
 RM := rm
 LINKFLAGS := -Llibft -lft
 LINKFLAGS_TEST := -lcheck -lm -lpthread -lrt -lcheck_pic -lsubunit
@@ -28,7 +28,11 @@ OBJ_ALL1 :=\
 	fd_repository.o\
 	loop.o\
 	server.o\
-	circular_buffer.o
+	circular_buffer.o\
+	irc_message.o\
+	command.o\
+	commands/nick.o\
+	commands/user.o
 
 # Files common only to main target
 OBJ_TARGET1 :=\
@@ -46,7 +50,7 @@ all: $(TARGET) $(TARGET_TEST)
 
 # Build .o first
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
-	@mkdir -p obj
+	@mkdir -p obj obj/commands
 	@echo [CC] $<
 	@$(CC) $(C_FLAGS) -o $@ -c $< $(INC_PATH)
 

@@ -9,7 +9,7 @@ static void				server_accept(t_app *app, int socket_fd)
   csin_len = sizeof(struct sockaddr_in);
   client_fd = accept(socket_fd, (struct sockaddr*)&csin, &csin_len);
   if (client_fd == -1)
-	error("accept failed");
+		error("accept failed");
 
   printf("New client #%d from %s:%d\n", client_fd,
 	inet_ntoa(csin.sin_addr), ntohs(csin.sin_port));
@@ -32,11 +32,13 @@ void					server_start(t_app *app)
 	int                 socket_fd;
 	struct sockaddr_in  sin;
 	struct protoent     *pe;
+	int one = 1;
 
 	pe = getprotobyname("tcp");
 	if (!pe)
 		error("getprotobyname failed");
 	socket_fd = socket(PF_INET, SOCK_STREAM, pe->p_proto);
+	setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, (char*)&one, sizeof(int));
 	if (socket_fd == -1)
 		error("socket failed");
 	sin.sin_family = AF_INET;

@@ -64,43 +64,11 @@ START_TEST(circular_buffer)
 	ck_assert(strncmp("elloye!b\nh", buf.buffer, 10) == 0);
 
 	/*
-	** Test writing and reading
-	** (yes, i understood them while writing but now it's full of mystery)
+	** Test reading
 	*/
 	char *ret;
 	size_t ret_size;
 
-	ret = NULL;
-	ret_size = circular_buffer_read(&buf, '\n', &ret);
-	ck_assert_ptr_ne(ret, NULL);
-	ck_assert(strncmp("ye!b\n", ret, 5) == 0);
-	ck_assert_uint_eq(ret_size, 5);
-	free(ret);
-	ret = NULL;
-
-	ret_size = circular_buffer_read(&buf, '\n', &ret);
-	ck_assert_ptr_eq(ret, NULL);
-	ck_assert_uint_eq(ret_size, 0);
-
-	ret_size = circular_buffer_read(&buf, '\n', &ret);
-	ck_assert_ptr_eq(ret, NULL);
-	ck_assert_uint_eq(ret_size, 0);
-
-	circular_buffer_write(&buf, "salut\n", 6);
-	ck_assert(strncmp("ellosalut\n", buf.buffer, 10) == 0);
-	ck_assert_uint_eq(buf.begin, 0);
-	ck_assert_uint_eq(buf.end, 0);
-	
-	ret_size = circular_buffer_read(&buf, '\n', &ret);
-	ck_assert_ptr_ne(ret, NULL);
-	ck_assert(strncmp("ellosalut\n", ret, 10) == 0);
-	ck_assert_uint_eq(ret_size, 10);
-	free(ret);
-	ret = NULL;
-
-	/*
-	** Test reading
-	*/
 	memcpy(buf.buffer, "123456789\n", 10);
 	buf.begin = 0;
 	buf.end = 0;
@@ -174,6 +142,68 @@ START_TEST(circular_buffer)
 	ck_assert_ptr_eq(ret, NULL);
 	ck_assert_uint_eq(buf.begin, 7);
 	ck_assert_uint_eq(buf.end, 7);
+	free(ret);
+
+	memcpy(buf.buffer, "23456789\n1", 10);
+	buf.begin = 9;
+	buf.end = 9;
+
+	ret_size = circular_buffer_read(&buf, '\n', &ret);
+	ck_assert_uint_eq(ret_size, 10);
+	ck_assert(strncmp("123456789\n", ret, 10) == 0);
+	ck_assert_uint_eq(buf.begin, 9);
+	ck_assert_uint_eq(buf.end, 9);
+	free(ret);
+	ret = NULL;
+
+	ret_size = circular_buffer_read(&buf, '\n', &ret);
+	ck_assert_uint_eq(ret_size, 0);
+	ck_assert_ptr_eq(ret, NULL);
+	ck_assert_uint_eq(buf.begin, 9);
+	ck_assert_uint_eq(buf.end, 9);
+	free(ret);
+
+	memcpy(buf.buffer, "a\nbc\nd\nef\n", 10);
+	buf.begin = 0;
+	buf.end = 0;
+
+	ret_size = circular_buffer_read(&buf, '\n', &ret);
+	ck_assert_uint_eq(ret_size, 2);
+	ck_assert(strncmp("a\n", ret, 2) == 0);
+	ck_assert_uint_eq(buf.begin, 2);
+	ck_assert_uint_eq(buf.end, 0);
+	free(ret);
+	ret = NULL;
+
+	ret_size = circular_buffer_read(&buf, '\n', &ret);
+	ck_assert_uint_eq(ret_size, 3);
+	ck_assert(strncmp("bc\n", ret, 3) == 0);
+	ck_assert_uint_eq(buf.begin, 5);
+	ck_assert_uint_eq(buf.end, 0);
+	free(ret);
+	ret = NULL;
+
+	ret_size = circular_buffer_read(&buf, '\n', &ret);
+	ck_assert_uint_eq(ret_size, 2);
+	ck_assert(strncmp("d\n", ret, 2) == 0);
+	ck_assert_uint_eq(buf.begin, 7);
+	ck_assert_uint_eq(buf.end, 0);
+	free(ret);
+	ret = NULL;
+
+	ret_size = circular_buffer_read(&buf, '\n', &ret);
+	ck_assert_uint_eq(ret_size, 3);
+	ck_assert(strncmp("ef\n", ret, 3) == 0);
+	ck_assert_uint_eq(buf.begin, 0);
+	ck_assert_uint_eq(buf.end, 0);
+	free(ret);
+	ret = NULL;
+
+	ret_size = circular_buffer_read(&buf, '\n', &ret);
+	ck_assert_uint_eq(ret_size, 0);
+	ck_assert_ptr_eq(ret, NULL);
+	ck_assert_uint_eq(buf.begin, 0);
+	ck_assert_uint_eq(buf.end, 0);
 	free(ret);
 
 

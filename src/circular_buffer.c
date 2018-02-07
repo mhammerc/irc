@@ -14,6 +14,7 @@ void						circular_buffer_init(t_circular_buffer *b, size_t size)
 	b->buffer = (char*)malloc(sizeof(char) * size);
 	if (b->buffer == NULL)
 		return ;
+	ft_bzero(b->buffer, size);
 	b->buffer_size = size;
 	b->begin = 0;
 	b->end = 0;
@@ -56,7 +57,7 @@ void						circular_buffer_write(t_circular_buffer *b, char *data, size_t data_si
 	quantity_to_copy = MIN(data_size, b->buffer_size - b->end);
 	remaining_to_copy = data_size - quantity_to_copy;
 	ft_memcpy(b->buffer + b->end, data, quantity_to_copy);
-	if (b->begin >= b->end && (b->begin < b->end + quantity_to_copy))
+	if (b->begin > b->end && (b->begin < b->end + quantity_to_copy))
 		b->begin = b->end + quantity_to_copy;
 	if (b->begin == b->buffer_size)
 		b->begin = 0;
