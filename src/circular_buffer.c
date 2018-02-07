@@ -1,5 +1,8 @@
 #include "irc.h"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wtype-limits"
+
 /*
 ** Init a buffer.
 ** You must destroy it with circular_buffer_destroy if you stop use it.
@@ -38,18 +41,12 @@ void						circular_buffer_destroy(t_circular_buffer *b)
 ** data: byte stream to append
 ** data_size: size of the byte stream
 */
-/*
-
-   |________|
-    ---------
- abs(10-12) = abs(-2) = 2
- abs(10-9) = abs(1) = 1
-*/
 void						circular_buffer_write(t_circular_buffer *b, char *data, size_t data_size)
 {
 	size_t		quantity_to_copy;
 	size_t		remaining_to_copy;
 	size_t		offset;
+
 
 	offset = 0;
 	if (data_size > b->buffer_size)
@@ -59,13 +56,21 @@ void						circular_buffer_write(t_circular_buffer *b, char *data, size_t data_si
 	quantity_to_copy = MIN(data_size, b->buffer_size - b->end);
 	remaining_to_copy = data_size - quantity_to_copy;
 	ft_memcpy(b->buffer + b->end, data, quantity_to_copy);
+	if (b->begin >= b->end && (b->begin < b->end + quantity_to_copy))
+		b->begin = b->end + quantity_to_copy;
+	if (b->begin == b->buffer_size)
+		b->begin = 0;
 	b->end += quantity_to_copy;
+	if (b->end == b->buffer_size)
+		b->end = 0;
 	if (remaining_to_copy == 0)
 		return;
-	b->end = remaining_to_copy;
 	ft_memcpy(b->buffer, data + quantity_to_copy, remaining_to_copy);
-	if (b->end > b->begin)
-		b->begin = b->end;
+	if (b->begin == b->buffer_size)
+		b->begin = 0;
+	if (b->begin >= 0 && (b->begin < remaining_to_copy))
+		b->begin = remaining_to_copy;
+	b->end = remaining_to_copy;
 }
 
 /*
@@ -99,7 +104,7 @@ size_t						circular_buffer_read(t_circular_buffer *b, char delimiter, char **re
 			found = 1;
 			break;
 		}
-		if (pos == b->end)
+		if (pos != b->begin && pos == b->end)
 			break;
 		++pos;
 	}
@@ -120,17 +125,24 @@ size_t						circular_buffer_read(t_circular_buffer *b, char delimiter, char **re
 	}
 	if (!found)
 		return (0);
-	
 	size_t		result_size;
 
 	result_size = pos - b->begin + 1;
 	if (from_0)
-		result_size = (b->buffer_size - b->begin) + pos;
+		result_size = (b->buffer_size - b->begin) + pos + 1;
 	*result = (char*)malloc(result_size + 1);	
 	ft_memcpy((*result), b->buffer + b->begin, MIN(result_size, b->buffer_size - b->begin));
+	ft_bzero(b->buffer + b->begin, MIN(result_size, b->buffer_size - b->begin));
 	if (from_0)
-		ft_memcpy((*result) + b->buffer_size - b->begin, b->buffer, pos);
+	{
+		ft_memcpy((*result) + (b->buffer_size - b->begin), b->buffer, pos + 1);
+		ft_bzero(b->buffer, pos + 1);
+	}
 	b->begin = pos + 1;
+	if (b->begin == b->buffer_size)
+		b->begin = 0;
 	(*result)[result_size] = '\0';
 	return (result_size);
 }
+
+#pragma GCC diagnostic pop
