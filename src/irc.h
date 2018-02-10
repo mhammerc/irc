@@ -49,25 +49,32 @@ void						circular_buffer_write(t_circular_buffer *b, char *data, size_t data_si
 size_t						circular_buffer_read(t_circular_buffer *b, char delimiter, char **result);
 
 /*
-** FD MANAGEMENT
+** CLIENT MANAGEMENT
+** (with fd)
 ** (clients & server)
 */
+
+typedef struct              s_client_info
+{
+    char                    *username;
+    char                    *nick;
+    char                    *hostname;
+    char                    *realname;
+    int                     mode;
+}                           t_client_info;
+
 typedef struct              s_fd_repository
 {
     int                     type;
     void                    (*fct_read)();
     void                    (*fct_write)();
 	t_circular_buffer		buf_read;
-    char                    buf_write[BUF_SIZE + 1];
+	t_circular_buffer		buf_write;
+    t_client_info           client_info;
 }                           t_fd_repository;
 
-typedef struct              s_client
-{
-
-}                           t_client;
-
 void						fd_repo_clean(t_fd_repository *fd);
-void            			client_write(t_app *app, int client_fd);
+void            			client_write(t_app *app, int client_fd, t_fd_repository *client);
 void            			client_read(t_app *app, int client_fd);
 
 /*
@@ -85,13 +92,14 @@ typedef struct              s_irc_message_prefix
 
 typedef struct              s_irc_message
 {
+	char					*original;
     t_irc_message_prefix    prefix;
     char                    *command;
     char                    *params[15];
     size_t                  params_size;
 }                           t_irc_message;
 
-t_irc_message               *irc_message_parse(char *message);
+t_irc_message               *irc_message_parse(char *message, size_t message_len);
 void                        irc_message_destroy(t_irc_message **message);
 
 /*
@@ -107,8 +115,9 @@ typedef struct              s_irc_command
 void                        command_register(t_app *app, char *name, t_irc_command_func func);
 t_irc_command               *command_search(t_app *app, char *name);
 
-void		                command_func_nick(t_app *app, int client_fd);
-void		                command_func_user(t_app *app, int client_fd);
+void		                command_func_nick(t_app *app, int client_fd, t_irc_message *message);
+void		                command_func_user(t_app *app, int client_fd, t_irc_message *message);
+void		                command_func_list(t_app *app, int client_fd, t_irc_message *message);
 
 /*
 ** MACRO APP MANAGEMENT

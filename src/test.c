@@ -7,6 +7,106 @@
 
 #include "irc.h"
 
+START_TEST(message_parser)
+{
+	printf("Testing message_parser...");
+
+	char *str;
+	
+	t_irc_message *message;
+
+	message = irc_message_parse("LIST\r\n", 6);
+	ck_assert_ptr_ne(message, NULL);
+	ck_assert_str_eq(message->command, "LIST");
+	ck_assert_uint_eq(message->params_size, 0);
+	ck_assert_ptr_eq(*message->params, 0);
+	irc_message_destroy(&message);
+
+	str = "JOIN channel\r\n";
+	message = irc_message_parse(str, strlen(str));
+	ck_assert_ptr_ne(message, NULL);
+	ck_assert_str_eq(message->command, "JOIN");
+	ck_assert_uint_eq(message->params_size, 1);
+	ck_assert_str_eq(message->params[0], "channel");
+	ck_assert_ptr_eq(message->params[1], NULL);
+	irc_message_destroy(&message);
+
+	str = "PRIVMSG asm_dev :Salut les gars :D Vous allez bien ?\r\n";
+	message = irc_message_parse(str, strlen(str));
+	ck_assert_ptr_ne(message, NULL);
+	ck_assert_str_eq(message->command, "PRIVMSG");
+	ck_assert_uint_eq(message->params_size, 2);
+	ck_assert_str_eq(message->params[0], "asm_dev");
+	ck_assert_str_eq(message->params[1], "Salut les gars :D Vous allez bien ?");
+	ck_assert_ptr_eq(message->params[2], NULL);
+	irc_message_destroy(&message);
+
+	// an IRC command is only letters. Thus, an '_' should not work.
+	str = "FAKE_COMMAND :etoui je teste bien les doubles points\r\n";
+	message = irc_message_parse(str, strlen(str));
+	ck_assert_ptr_eq(message, NULL);
+
+	str = "CAPS LS 302\r\n";
+	message = irc_message_parse(str, strlen(str));
+	ck_assert_ptr_ne(message, NULL);
+	ck_assert_str_eq(message->command, "CAPS");
+	ck_assert_uint_eq(message->params_size, 2);
+	ck_assert_str_eq(message->params[0], "LS");
+	ck_assert_str_eq(message->params[1], "302");
+	ck_assert_ptr_eq(message->params[2], NULL);
+	irc_message_destroy(&message);
+
+	// an IRC command can also be 3 digits.
+	str = "001\r\n";
+	message = irc_message_parse(str, strlen(str));
+	ck_assert_ptr_ne(message, NULL);
+	ck_assert_str_eq(message->command, "001");
+	ck_assert_uint_eq(message->params_size, 0);
+	ck_assert_ptr_eq(message->params[0], NULL);
+	irc_message_destroy(&message);
+
+	str = "420\r\n";
+	message = irc_message_parse(str, strlen(str));
+	ck_assert_ptr_ne(message, NULL);
+	ck_assert_str_eq(message->command, "420");
+	ck_assert_uint_eq(message->params_size, 0);
+	ck_assert_ptr_eq(message->params[0], NULL);
+	irc_message_destroy(&message);
+
+	// a digit IRC command is strictly 3 digits
+	str = "01\r\n";
+	message = irc_message_parse(str, strlen(str));
+	ck_assert_ptr_eq(message, NULL);
+
+	str = "1\r\n";
+	message = irc_message_parse(str, strlen(str));
+	ck_assert_ptr_eq(message, NULL);
+
+	str = "0001\r\n";
+	message = irc_message_parse(str, strlen(str));
+	ck_assert_ptr_eq(message, NULL);
+
+	// We can not mix digits and letters
+	str = "A001\r\n";
+	message = irc_message_parse(str, strlen(str));
+	ck_assert_ptr_eq(message, NULL);
+
+	str = "LIST001\r\n";
+	message = irc_message_parse(str, strlen(str));
+	ck_assert_ptr_eq(message, NULL);
+
+	str = "001LIST\r\n";
+	message = irc_message_parse(str, strlen(str));
+	ck_assert_ptr_eq(message, NULL);
+
+	str = "A01LIST\r\n";
+	message = irc_message_parse(str, strlen(str));
+	ck_assert_ptr_eq(message, NULL);
+
+	printf("done !\n");
+}
+END_TEST
+
 START_TEST(circular_buffer)
 {
     printf("Testing circular_buffer...");
@@ -220,6 +320,7 @@ int main(void)
 
     suite_add_tcase(s1, tc1_1);
     tcase_add_test(tc1_1, circular_buffer);
+    tcase_add_test(tc1_1, message_parser);
 
     srunner_run_all(sr, CK_ENV);
     nf = srunner_ntests_failed(sr);

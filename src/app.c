@@ -7,6 +7,7 @@ void	register_base_commands(t_app *app)
 {
 	command_register(app, "NICK", command_func_nick);
 	command_register(app, "USER", command_func_user);
+	command_register(app, "LIST", command_func_list);
 }
 
 /*

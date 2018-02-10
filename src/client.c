@@ -1,10 +1,18 @@
 #include "irc.h"
 
-void            client_write(t_app *app, int client_fd)
+void            client_write(t_app *app, int client_fd, t_fd_repository *client)
 {
+	size_t	len;
+	char	*str;
+
 	(void)app;
-	(void)client_fd;
-	//send(client_fd, "hello\n", 6, 0);
+	len = circular_buffer_read(&client->buf_write, '\n', &str);
+	if (len > 0)
+	{
+		send(client_fd, str, len, 0);
+		printf("Send %s\n", str);
+		free(str);
+	}
 }
 
 void            client_read(t_app *app, int client_fd)
@@ -31,13 +39,15 @@ void            client_read(t_app *app, int client_fd)
 	len = 0;
 	while (1)
 	{
-		len = circular_buffer_read(&app->fds[client_fd].buf_read, '\n', &message);
+		len = circular_buffer_read(&app->fds[client_fd].buf_read, '\n', &message_str);
 		if (len == 0)
 			break;
-		message = irc_message_parse(message_str);
+		message = irc_message_parse(message_str, len);
 		command = command_search(app, message->command);
 		if (command)
 			command->func(app, client_fd, message);
+		else
+			printf("CMD not found. |%s| |%s|", message->command, message_str);
 		irc_message_destroy(&message);
 	}
 }

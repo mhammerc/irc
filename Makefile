@@ -29,10 +29,11 @@ OBJ_ALL1 :=\
 	loop.o\
 	server.o\
 	circular_buffer.o\
-	irc_message.o\
+	message.o\
 	command.o\
 	commands/nick.o\
-	commands/user.o
+	commands/user.o\
+	commands/list.o
 
 # Files common only to main target
 OBJ_TARGET1 :=\

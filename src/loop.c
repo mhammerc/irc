@@ -17,11 +17,8 @@ void	loop_start(t_app *app)
 				continue;
 			}
 
-			app->fds[i].buf_write[0] = 0;
-			strcat(app->fds[i].buf_write, "Hello!\n");
 			FD_SET(i, &app->fd_read);
-			if (strlen(app->fds[i].buf_write) > 0)
-				FD_SET(i, &app->fd_write);
+			FD_SET(i, &app->fd_write);
 			app->max = MAX(app->max, i);
 			++i;
 		}
@@ -34,7 +31,7 @@ void	loop_start(t_app *app)
 			if (FD_ISSET(i, &app->fd_read))
 				app->fds[i].fct_read(app, i);
 			if (FD_ISSET(i, &app->fd_write))
-				app->fds[i].fct_write(app, i);
+				app->fds[i].fct_write(app, i, app->fds + i);
 			if (FD_ISSET(i, &app->fd_read) || FD_ISSET(i, &app->fd_write))
 				--app->r;
 			++i;
