@@ -11,6 +11,6 @@ void		command_func_user(t_app *app, int client_fd, t_irc_message *message)
 
 	char	*result = NULL;
 	ft_sprintf(&result, ":127.0.0.1 001 %s Welcome on Martin's IRC Server!\r\n", _client_fd->client_info.username);
-	circular_buffer_write(&_client_fd->buf_write, result, ft_strlen(result));
+	client_reply(_client_fd, result);
 	free(result);
 }

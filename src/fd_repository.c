@@ -1,5 +1,6 @@
 #include "irc.h"
 
+// TODO: free things in fd->client_info
 void fd_repo_clean(t_fd_repository *fd)
 {
 	fd->type = FD_FREE;

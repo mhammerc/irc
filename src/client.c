@@ -1,5 +1,21 @@
 #include "irc.h"
 
+/*
+** Insert a reply into the client write buffer.
+** 
+** client: structure to clients data
+** msg: reply to send. Must be null-terminated
+*/
+void			client_reply(t_fd_repository *client, char *msg)
+{
+	if (!client || !msg)
+	{
+		fprintf(stderr, "Received NULL parameter on %s:%s", __FILE__, __LINE__);
+		return ;
+	}
+	circular_buffer_write(&client->buf_write, msg, strlen(msg));
+}
+
 void            client_write(t_app *app, int client_fd, t_fd_repository *client)
 {
 	size_t	len;

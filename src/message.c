@@ -86,7 +86,7 @@ static char		*read_command(t_irc_message *parsed, char *message)
 	flags = 0;
 	while (parsed->command[i])
 	{
-		if (!ft_isalpha(parsed->command[i]) && !(ft_isdigit(parsed->command[i]) && i < 3))
+		if (!ft_isalpha(parsed->command[i]) && !ft_isdigit(parsed->command[i]))
 			return (NULL);
 		if (ft_isalpha(parsed->command[i]))
 			flags |= 1 << 0;
@@ -94,9 +94,7 @@ static char		*read_command(t_irc_message *parsed, char *message)
 			flags |= 1 << 1;
 		++i;
 	}
-	if (ft_isdigit(parsed->command[0]) && i != 3)
-		return (NULL);
-	if (flags == 3) // we cannot mix digits and letters
+	if (flags == 3 || (flags == 2 && i != 3)) // we cannot mix digits and letters
 		return (NULL);
 	return (command_end);
 }

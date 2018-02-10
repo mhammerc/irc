@@ -74,6 +74,7 @@ typedef struct              s_fd_repository
 }                           t_fd_repository;
 
 void						fd_repo_clean(t_fd_repository *fd);
+void						client_reply(t_fd_repository *client, char *reply);
 void            			client_write(t_app *app, int client_fd, t_fd_repository *client);
 void            			client_read(t_app *app, int client_fd);
 
@@ -101,6 +102,12 @@ typedef struct              s_irc_message
 
 t_irc_message               *irc_message_parse(char *message, size_t message_len);
 void                        irc_message_destroy(t_irc_message **message);
+
+/*
+** REPLIES
+*/
+# include "responses.h"
+
 
 /*
 ** IRC COMMANDS FUNCTIONS
