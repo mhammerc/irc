@@ -30,7 +30,7 @@ void	loop_start(t_app *app)
 		{
 			if (FD_ISSET(i, &app->fd_read))
 				app->fds[i].fct_read(app, i);
-			if (FD_ISSET(i, &app->fd_write))
+			if (app->fds[i].type != FD_FREE && FD_ISSET(i, &app->fd_write))
 				app->fds[i].fct_write(app, i, app->fds + i);
 			if (FD_ISSET(i, &app->fd_read) || FD_ISSET(i, &app->fd_write))
 				--app->r;
