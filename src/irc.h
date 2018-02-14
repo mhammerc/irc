@@ -80,6 +80,18 @@ void            			client_write(t_app *app, int client_fd, t_fd_repository *clie
 void            			client_read(t_app *app, int client_fd);
 
 /*
+** CHANNELS MANAGEMENT
+*/
+typedef struct				s_channel
+{
+	char					*name;
+	char					*description;
+	size_t					num_users;
+}							t_channel;
+
+t_channel					create_channel(char *name, char *description);
+
+/*
 ** IRC MESSAGES PARSER
 ** Compliant to RFC 2812
 ** https://tools.ietf.org/html/rfc2812#section-2.3
@@ -139,6 +151,7 @@ struct              s_app
     fd_set                  fd_read;
     fd_set                  fd_write;
     t_list                  *irc_commands;
+	t_list					*channels;
 };
 
 void						error(char *str);

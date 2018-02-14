@@ -37,13 +37,13 @@ static int	check_nickname(char *nickname)
 /*
 ** Action NICK.
 **
-** TODO: ERR_NICKNAMEINUSE
 ** TODO: ERR_UNAVAILRESOURCE
 */
 void		command_func_nick(t_app *app, int _client_fd, t_irc_message *message)
 {
 	t_fd_repository		*client_fd;
 	char				*reply;
+	int					i;
 
 	client_fd = app->fds + _client_fd;
 	reply = NULL;
@@ -54,10 +54,25 @@ void		command_func_nick(t_app *app, int _client_fd, t_irc_message *message)
 	}
 	if (!check_nickname(message->params[0]))
 	{
-		ft_sprintf(&reply, "%s %s", message->params[0], ":Nickname is already in use");
+		ft_sprintf(&reply, "%s %s", message->params[0], ":Erroneous nickname");
 		client_reply(client_fd, ERR_ERRONEUSNICKNAME, reply);
 		free(reply);
 		return ;
+	}
+	printf("ok\n");
+	i = 0;
+	while (i < app->maxfd)
+	{
+		if (app->fds[i].type == FD_CLIENT
+		&& app->fds[i].client_info.nick
+		&& ft_strcmp(app->fds[i].client_info.nick, message->params[0]) == 0)
+		{
+			ft_sprintf(&reply, "%s %s", message->params[0], ":Nickname already in use");
+			client_reply(client_fd, ERR_NICKNAMEINUSE, reply);
+			free(reply);
+			return;
+		}
+		++i;
 	}
 	if (client_fd->client_info.nick)
 		free(client_fd->client_info.nick);

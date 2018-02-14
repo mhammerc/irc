@@ -2,13 +2,13 @@
 
 /*
 ** Action USER
-** TODO: ERR_ALREADYREGISTRED
 ** TODO: save mode
 */
 void		command_func_user(t_app *app, int _client_fd, t_irc_message *message)
 {
 	t_fd_repository	*client_fd;
 	char			*reply;
+	int				i;
 
 	client_fd = app->fds + _client_fd;
 	reply = NULL;
@@ -16,6 +16,18 @@ void		command_func_user(t_app *app, int _client_fd, t_irc_message *message)
 	{
 		client_reply(client_fd, ERR_NEEDMOREPARAMS, "USER :Not enough parameters");
 		return ;
+	}
+	i = 0;
+	while (i < app->maxfd)
+	{
+		if (app->fds[i].type == FD_CLIENT
+		&& app->fds[i].client_info.username
+		&& ft_strcmp(app->fds[i].client_info.username, message->params[0]) == 0)
+		{
+			client_reply(client_fd, ERR_ALREADYREGISTRED, ":Unauthorized command (already registered)");
+			return;
+		}
+		++i;
 	}
 	client_fd->client_info.username = ft_strdup(message->params[0]);
 	client_fd->client_info.realname = ft_strdup(message->params[3]);

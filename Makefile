@@ -30,6 +30,7 @@ OBJ_ALL1 :=\
 	server.o\
 	circular_buffer.o\
 	message.o\
+	channel.o\
 	command.o\
 	commands/nick.o\
 	commands/user.o\

@@ -10,6 +10,17 @@ void	register_base_commands(t_app *app)
 	command_register(app, "LIST", command_func_list);
 }
 
+static void	register_base_channels(t_app *app)
+{
+	t_channel	chan;
+
+	chan = create_channel("!general", "General discussions");
+	ft_lstadd(&app->channels, ft_lstnew(&chan, sizeof(t_channel)));
+
+	chan = create_channel("!flood", "Non-moderated discussions");
+	ft_lstadd(&app->channels, ft_lstnew(&chan, sizeof(t_channel)));
+}
+
 /*
 ** Init the app global variable.
 ** Set maxfd and prepare the fd array.
@@ -34,6 +45,7 @@ void     init_app(t_app *app)
 		++i;
 	}
 	register_base_commands(app);
+	register_base_channels(app);
 }
 
 t_app    *get_app()

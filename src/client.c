@@ -13,11 +13,14 @@ void			client_reply(t_fd_repository *client, char *numeric_reply, char *msg)
 		fprintf(stderr, "Received NULL parameter on %s:%d", __FILE__, __LINE__);
 		return ;
 	}
-	circular_buffer_write(&client->buf_write, ":127.0.0.1 ", 12);
+	circular_buffer_write(&client->buf_write, ":127.0.0.1 ", 11);
 	circular_buffer_write(&client->buf_write, numeric_reply, strlen(numeric_reply));
 	circular_buffer_write(&client->buf_write, " ", 1);
-	circular_buffer_write(&client->buf_write, client->client_info.nick, strlen(client->client_info.nick));
-	circular_buffer_write(&client->buf_write, " ", 1);
+	if (client->client_info.nick)
+	{
+		circular_buffer_write(&client->buf_write, client->client_info.nick, strlen(client->client_info.nick));
+		circular_buffer_write(&client->buf_write, " ", 1);
+	}
 	circular_buffer_write(&client->buf_write, msg, strlen(msg));
 	circular_buffer_write(&client->buf_write, "\r\n", 2);
 }
