@@ -33,7 +33,14 @@ OBJ_ALL1 :=\
 	command.o\
 	commands/nick.o\
 	commands/user.o\
-	commands/list.o
+	commands/list.o\
+	hash_table/ht_create.o\
+	hash_table/ht_delete.o\
+	hash_table/ht_destroy.o\
+	hash_table/ht_hash.o\
+	hash_table/ht_insert.o\
+	hash_table/ht_num_elements_saved.o\
+	hash_table/ht_search.o
 
 # Files common only to main target
 OBJ_TARGET1 :=\
@@ -51,7 +58,7 @@ all: $(TARGET) $(TARGET_TEST)
 
 # Build .o first
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
-	@mkdir -p obj obj/commands
+	@mkdir -p obj obj/commands obj/hash_table
 	@echo [CC] $<
 	@$(CC) $(C_FLAGS) -o $@ -c $< $(INC_PATH)
 

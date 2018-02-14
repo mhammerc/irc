@@ -14,6 +14,7 @@
 # include <arpa/inet.h>
 # include <netdb.h>
 
+# include "hash_table/hash_table.h"
 # include "../libft/libft.h"
 
 # define FD_FREE 0
@@ -74,7 +75,7 @@ typedef struct              s_fd_repository
 }                           t_fd_repository;
 
 void						fd_repo_clean(t_fd_repository *fd);
-void						client_reply(t_fd_repository *client, char *reply);
+void						client_reply(t_fd_repository *client, char *numeric_reply, char *reply);
 void            			client_write(t_app *app, int client_fd, t_fd_repository *client);
 void            			client_read(t_app *app, int client_fd);
 
@@ -107,7 +108,6 @@ void                        irc_message_destroy(t_irc_message **message);
 ** REPLIES
 */
 # include "responses.h"
-
 
 /*
 ** IRC COMMANDS FUNCTIONS

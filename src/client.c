@@ -6,14 +6,20 @@
 ** client: structure to clients data
 ** msg: reply to send. Must be null-terminated
 */
-void			client_reply(t_fd_repository *client, char *msg)
+void			client_reply(t_fd_repository *client, char *numeric_reply, char *msg)
 {
 	if (!client || !msg)
 	{
-		fprintf(stderr, "Received NULL parameter on %s:%s", __FILE__, __LINE__);
+		fprintf(stderr, "Received NULL parameter on %s:%d", __FILE__, __LINE__);
 		return ;
 	}
+	circular_buffer_write(&client->buf_write, ":127.0.0.1 ", 12);
+	circular_buffer_write(&client->buf_write, numeric_reply, strlen(numeric_reply));
+	circular_buffer_write(&client->buf_write, " ", 1);
+	circular_buffer_write(&client->buf_write, client->client_info.nick, strlen(client->client_info.nick));
+	circular_buffer_write(&client->buf_write, " ", 1);
 	circular_buffer_write(&client->buf_write, msg, strlen(msg));
+	circular_buffer_write(&client->buf_write, "\r\n", 2);
 }
 
 void            client_write(t_app *app, int client_fd, t_fd_repository *client)
@@ -26,7 +32,7 @@ void            client_write(t_app *app, int client_fd, t_fd_repository *client)
 	if (len > 0)
 	{
 		send(client_fd, str, len, 0);
-		printf("Send %s\n", str);
+		printf("Send %s", str);
 		free(str);
 	}
 }
@@ -58,12 +64,13 @@ void            client_read(t_app *app, int client_fd)
 		len = circular_buffer_read(&app->fds[client_fd].buf_read, '\n', &message_str);
 		if (len == 0)
 			break;
+		printf("Recv %s", message_str);
 		message = irc_message_parse(message_str, len);
 		command = command_search(app, message->command);
 		if (command)
 			command->func(app, client_fd, message);
 		else
-			printf("CMD not found. |%s| |%s|", message->command, message_str);
+		{}
 		irc_message_destroy(&message);
 	}
 }
