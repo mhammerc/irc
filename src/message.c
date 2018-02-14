@@ -53,6 +53,15 @@ static char		*read_prefix(t_irc_message *parsed, char *message)
 	return (return_value);
 }
 
+static void		_upstr(char *str)
+{
+	while (*str)
+	{
+		*str = ft_toupper(*str);
+		++str;
+	}
+}
+
 /*
 ** Read the command in the message.
 ** 
@@ -96,6 +105,7 @@ static char		*read_command(t_irc_message *parsed, char *message)
 	}
 	if (flags == 3 || (flags == 2 && i != 3)) // we cannot mix digits and letters
 		return (NULL);
+	_upstr(parsed->command);
 	return (command_end);
 }
 
