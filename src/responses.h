@@ -5,6 +5,7 @@
 # define RPL_YOURHOST "002"
 # define RPL_CREATED "003"
 # define RPL_MYINFO "004"
+# define RPL_UMODEIS "221"
 # define RPL_LIST "322"
 # define RPL_LISTEND "323"
 
@@ -18,5 +19,7 @@
 # define ERR_NEEDMOREPARAMS "461"
 # define ERR_ALREADYREGISTRED "462"
 # define ERR_RESTRICTED "484"
+# define ERR_UMODEUNKNOWNFLAG "501"
+# define ERR_USERSDONTMATCH "502"
 
 #endif

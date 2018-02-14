@@ -64,6 +64,13 @@ typedef struct              s_client_info
     int                     mode;
 }                           t_client_info;
 
+# define CLIENT_MODE_AWAY 2
+# define CLIENT_MODE_WALLOPS 4
+# define CLIENT_MODE_INVISIBLE 8
+# define CLIENT_MODE_RESTRICTED 16
+# define CLIENT_MODE_OPERATOR 32
+# define CLIENT_MODE_LOCAL_OPERATOR 64
+
 typedef struct              s_fd_repository
 {
     int                     type;
@@ -137,6 +144,7 @@ t_irc_command               *command_search(t_app *app, char *name);
 void		                command_func_nick(t_app *app, int client_fd, t_irc_message *message);
 void		                command_func_user(t_app *app, int client_fd, t_irc_message *message);
 void		                command_func_list(t_app *app, int client_fd, t_irc_message *message);
+void						command_func_mode(t_app *app, int client_fd, t_irc_message *message);
 
 /*
 ** MACRO APP MANAGEMENT
