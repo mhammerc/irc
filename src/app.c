@@ -10,6 +10,7 @@ void	register_base_commands(t_app *app)
 	command_register(app, "LIST", command_func_list);
 	command_register(app, "OPER", command_func_oper);
 	command_register(app, "MODE", command_func_mode);
+	command_register(app, "QUIT", command_func_quit);
 }
 
 static void	register_base_channels(t_app *app)

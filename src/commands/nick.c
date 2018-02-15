@@ -38,6 +38,7 @@ static int	check_nickname(char *nickname)
 ** Action NICK.
 **
 ** TODO: ERR_UNAVAILRESOURCE
+** TODO: Protect other commands when NICK and USER didn't validated yet.
 */
 void		command_func_nick(t_app *app, int _client_fd, t_irc_message *message)
 {

@@ -37,6 +37,7 @@ OBJ_ALL1 :=\
 	commands/list.o\
 	commands/oper.o\
 	commands/mode.o\
+	commands/quit.o\
 	hash_table/ht_create.o\
 	hash_table/ht_delete.o\
 	hash_table/ht_destroy.o\

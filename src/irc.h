@@ -83,6 +83,7 @@ typedef struct              s_fd_repository
 
 void						fd_repo_clean(t_fd_repository *fd);
 void						client_reply(t_fd_repository *client, char *numeric_reply, char *reply);
+void						client_reply_raw(t_fd_repository *client, char *msg);
 void            			client_write(t_app *app, int client_fd, t_fd_repository *client);
 void            			client_read(t_app *app, int client_fd);
 
@@ -146,6 +147,7 @@ void		                command_func_user(t_app *app, int client_fd, t_irc_message
 void		                command_func_list(t_app *app, int client_fd, t_irc_message *message);
 void		                command_func_oper(t_app *app, int client_fd, t_irc_message *message);
 void						command_func_mode(t_app *app, int client_fd, t_irc_message *message);
+void						command_func_quit(t_app *app, int client_fd, t_irc_message *message);
 
 /*
 ** MACRO APP MANAGEMENT
