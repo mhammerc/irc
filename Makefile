@@ -35,6 +35,7 @@ OBJ_ALL1 :=\
 	commands/nick.o\
 	commands/user.o\
 	commands/list.o\
+	commands/oper.o\
 	commands/mode.o\
 	hash_table/ht_create.o\
 	hash_table/ht_delete.o\

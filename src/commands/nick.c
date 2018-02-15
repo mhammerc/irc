@@ -49,7 +49,7 @@ void		command_func_nick(t_app *app, int _client_fd, t_irc_message *message)
 	reply = NULL;
 	if (message->params_size < 1)
 	{
-		client_reply(client_fd,ERR_NONICKNAMEGIVEN, ":No nickname given");
+		client_reply(client_fd, ERR_NONICKNAMEGIVEN, ":No nickname given");
 		return ;
 	}
 	if (!check_nickname(message->params[0]))

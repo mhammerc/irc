@@ -144,6 +144,7 @@ t_irc_command               *command_search(t_app *app, char *name);
 void		                command_func_nick(t_app *app, int client_fd, t_irc_message *message);
 void		                command_func_user(t_app *app, int client_fd, t_irc_message *message);
 void		                command_func_list(t_app *app, int client_fd, t_irc_message *message);
+void		                command_func_oper(t_app *app, int client_fd, t_irc_message *message);
 void						command_func_mode(t_app *app, int client_fd, t_irc_message *message);
 
 /*
