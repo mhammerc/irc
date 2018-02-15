@@ -12,11 +12,7 @@ int		channel_have_client(t_app *app, char *channel_name, t_fd_repository *client
 
 	ch = channel_get(app, channel_name);
 	if (!ch)
-	{
-		fprintf(stderr, "Received invalid channel_name parameter on %s:%d",
-		__FILE__, __LINE__);
 		return (0);
-	}
 	iter = ch->clients;
 	while (iter)
 	{

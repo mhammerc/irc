@@ -12,6 +12,7 @@ void	channel_create(t_app *app, char *name, char *description)
 
 	ft_bzero(&channel, sizeof(t_channel));
 	channel.name = ft_strdup(name);
-	channel.description = ft_strdup(description);
+	if (description)
+		channel.description = ft_strdup(description);
 	channel_register(app, &channel);
 }

@@ -60,7 +60,6 @@ void		command_func_nick(t_app *app, int _client_fd, t_irc_message *message)
 		free(reply);
 		return ;
 	}
-	printf("ok\n");
 	i = 0;
 	while (i < app->maxfd)
 	{

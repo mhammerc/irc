@@ -7,11 +7,14 @@ void	register_base_commands(t_app *app)
 {
 	command_register(app, "NICK", command_func_nick);
 	command_register(app, "USER", command_func_user);
-	command_register(app, "LIST", command_func_list);
 	command_register(app, "OPER", command_func_oper);
 	command_register(app, "MODE", command_func_mode);
 	command_register(app, "QUIT", command_func_quit);
 	command_register(app, "JOIN", command_func_join);
+	command_register(app, "PART", command_func_part);
+	command_register(app, "TOPIC", command_func_topic);
+	command_register(app, "NAMES", command_func_names);
+	command_register(app, "LIST", command_func_list);
 }
 
 static void	register_base_channels(t_app *app)

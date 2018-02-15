@@ -33,10 +33,14 @@ OBJ_ALL1 :=\
 	command.o\
 	commands/nick.o\
 	commands/user.o\
-	commands/list.o\
 	commands/oper.o\
 	commands/mode.o\
 	commands/quit.o\
+	commands/join.o\
+	commands/part.o\
+	commands/topic.o\
+	commands/names.o\
+	commands/list.o\
 	channel/ch_create.o\
 	channel/ch_free.o\
 	channel/ch_get.o\
@@ -45,6 +49,7 @@ OBJ_ALL1 :=\
 	channel/ch_add_client.o\
 	channel/ch_remove_client.o\
 	channel/ch_have_client.o\
+	channel/ch_broadcast.o\
 	hash_table/ht_create.o\
 	hash_table/ht_delete.o\
 	hash_table/ht_destroy.o\
