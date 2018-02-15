@@ -12,7 +12,7 @@ static void	print_channels_info(t_app *app, t_fd_repository *client_fd, char *ch
 		chan = (t_channel*)iter->content;	
 		if (ft_strcmp(chan->name, channel_name) == 0)
 		{
-			ft_sprintf(&reply, "%s %d %s", chan->name, chan->num_users, chan->description);
+			ft_sprintf(&reply, "%s %d %s", chan->name, chan->num_clients, chan->description);
 			client_reply(client_fd, RPL_LIST, reply);
 			free(reply);
 			return ;

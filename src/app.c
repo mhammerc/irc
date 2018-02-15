@@ -11,17 +11,14 @@ void	register_base_commands(t_app *app)
 	command_register(app, "OPER", command_func_oper);
 	command_register(app, "MODE", command_func_mode);
 	command_register(app, "QUIT", command_func_quit);
+	command_register(app, "JOIN", command_func_join);
 }
 
 static void	register_base_channels(t_app *app)
 {
-	t_channel	chan;
+	channel_create(app, "!general", "General discussions");
 
-	chan = create_channel("!general", "General discussions");
-	ft_lstadd(&app->channels, ft_lstnew(&chan, sizeof(t_channel)));
-
-	chan = create_channel("!flood", "Non-moderated discussions");
-	ft_lstadd(&app->channels, ft_lstnew(&chan, sizeof(t_channel)));
+	channel_create(app, "!flood", "Non-moderated discussions");
 }
 
 /*

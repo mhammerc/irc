@@ -30,7 +30,6 @@ OBJ_ALL1 :=\
 	server.o\
 	circular_buffer.o\
 	message.o\
-	channel.o\
 	command.o\
 	commands/nick.o\
 	commands/user.o\
@@ -38,6 +37,14 @@ OBJ_ALL1 :=\
 	commands/oper.o\
 	commands/mode.o\
 	commands/quit.o\
+	channel/ch_create.o\
+	channel/ch_free.o\
+	channel/ch_get.o\
+	channel/ch_register.o\
+	channel/ch_remove.o\
+	channel/ch_add_client.o\
+	channel/ch_remove_client.o\
+	channel/ch_have_client.o\
 	hash_table/ht_create.o\
 	hash_table/ht_delete.o\
 	hash_table/ht_destroy.o\
@@ -62,7 +69,7 @@ all: $(TARGET) $(TARGET_TEST)
 
 # Build .o first
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
-	@mkdir -p obj obj/commands obj/hash_table
+	@mkdir -p obj obj/commands obj/channel obj/hash_table
 	@echo [CC] $<
 	@$(CC) $(C_FLAGS) -o $@ -c $< $(INC_PATH)
 

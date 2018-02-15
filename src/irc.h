@@ -94,10 +94,19 @@ typedef struct				s_channel
 {
 	char					*name;
 	char					*description;
-	size_t					num_users;
+	int						mode;
+	t_list					*clients;
+	size_t					num_clients;
 }							t_channel;
 
-t_channel					create_channel(char *name, char *description);
+void						channel_register(t_app *app, t_channel *channel);
+void						channel_create(t_app *app, char *name, char *description);
+void						channel_remove(t_app *app, char *name);
+void						channel_free(t_app *app, t_channel **chan);
+t_channel					*channel_get(t_app *app, char *name);
+void						channel_add_client(t_app *app, char *channel_name, t_fd_repository *client);
+void						channel_remove_client(t_app *app, char *channel_name, t_fd_repository *client);
+int							channel_have_client(t_app *app, char *channel_name, t_fd_repository *client);
 
 /*
 ** IRC MESSAGES PARSER
@@ -148,6 +157,7 @@ void		                command_func_list(t_app *app, int client_fd, t_irc_message
 void		                command_func_oper(t_app *app, int client_fd, t_irc_message *message);
 void						command_func_mode(t_app *app, int client_fd, t_irc_message *message);
 void						command_func_quit(t_app *app, int client_fd, t_irc_message *message);
+void						command_func_join(t_app *app, int client_fd, t_irc_message *message);
 
 /*
 ** MACRO APP MANAGEMENT
