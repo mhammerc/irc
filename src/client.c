@@ -5,10 +5,11 @@
 ** 
 ** client: structure to clients data
 ** msg: reply to send. Must be null-terminated
+** TODO: dynamic host
 */
 void			client_reply(t_fd_repository *client, char *numeric_reply, char *msg)
 {
-	if (!client || !msg)
+	if (!client || !numeric_reply || !msg)
 	{
 		fprintf(stderr, "Received NULL parameter on %s:%d", __FILE__, __LINE__);
 		return ;
@@ -23,6 +24,30 @@ void			client_reply(t_fd_repository *client, char *numeric_reply, char *msg)
 	}
 	circular_buffer_write(&client->buf_write, msg, strlen(msg));
 	circular_buffer_write(&client->buf_write, "\r\n", 2);
+}
+
+void			client_reply_with_origin(t_fd_repository *dest, t_fd_repository *src, char *numeric_reply, char *msg)
+{
+	if (!dest || !src || !numeric_reply || !msg)
+	{
+		fprintf(stderr, "Received NULL parameter on %s:%d", __FILE__, __LINE__);
+		return ;
+	}
+	circular_buffer_write(&dest->buf_write, ":", 1);
+	circular_buffer_write(&dest->buf_write, src->client_info.nick, strlen(src->client_info.nick));
+	circular_buffer_write(&dest->buf_write, "!", 1);
+	circular_buffer_write(&dest->buf_write, src->client_info.username, strlen(src->client_info.username));
+	circular_buffer_write(&dest->buf_write, "@127.0.0.1 ", 11);
+	circular_buffer_write(&dest->buf_write, numeric_reply, strlen(numeric_reply));
+	circular_buffer_write(&dest->buf_write, " ", 1);
+	if (dest->client_info.nick)
+	{
+		circular_buffer_write(&dest->buf_write, dest->client_info.nick, strlen(dest->client_info.nick));
+		circular_buffer_write(&dest->buf_write, " ", 1);
+	}
+	circular_buffer_write(&dest->buf_write, msg, strlen(msg));
+	circular_buffer_write(&dest->buf_write, "\r\n", 2);
+
 }
 
 /*

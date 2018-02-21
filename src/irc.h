@@ -83,9 +83,11 @@ typedef struct              s_fd_repository
 
 void						fd_repo_clean(t_fd_repository *fd);
 void						client_reply(t_fd_repository *client, char *numeric_reply, char *reply);
+void						client_reply_with_origin(t_fd_repository *dest, t_fd_repository *src, char *numeric_reply, char *msg);
 void						client_reply_raw(t_fd_repository *client, char *msg);
 void            			client_write(t_app *app, int client_fd, t_fd_repository *client);
 void            			client_read(t_app *app, int client_fd);
+t_fd_repository 			*client_get_by_nick(t_app *app, char *nick);
 
 /*
 ** CHANNELS MANAGEMENT
@@ -98,6 +100,18 @@ typedef struct				s_channel
 	t_list					*clients;
 	size_t					num_clients;
 }							t_channel;
+
+# define CHANNEL_MODE_ANONYMOUS (1 << 0)
+# define CHANNEL_MODE_INVITE_ONLY (1 << 1)
+# define CHANNEL_MODE_MODERATED (1 << 2)
+# define CHANNEL_MODE_NO_OUTSIDE_MESSAGE (1 << 3)
+# define CHANNEL_MODE_QUIET (1 << 4)
+# define CHANNEL_MODE_PRIVATE (1 << 5)
+# define CHANNEL_MODE_SECRET (1 << 6)
+# define CHANNEL_MODE_SERVER_REOP (1 << 7)
+# define CHANNEL_MODE_TOPIC_SETTABLE_BY_OPERATOR_ONLY (1 << 8)
+# define CHANNEL_MODE_KEY (1 << 8)
+# define CHANNEL_MODE_USER_LIMIT (1 << 9)
 
 void						channel_register(t_app *app, t_channel *channel);
 void						channel_create(t_app *app, char *name, char *description);
@@ -163,6 +177,8 @@ void						command_func_join(t_app *app, int client_fd, t_irc_message *message);
 void						command_func_part(t_app *app, int client_fd, t_irc_message *message);
 void						command_func_topic(t_app *app, int client_fd, t_irc_message *message);
 void						command_func_names(t_app *app, int client_fd, t_irc_message *message);
+void						command_func_invite(t_app *app, int client_fd, t_irc_message *message);
+void						command_func_kick(t_app *app, int client_fd, t_irc_message *message);
 
 /*
 ** MACRO APP MANAGEMENT

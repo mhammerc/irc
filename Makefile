@@ -30,6 +30,7 @@ OBJ_ALL1 :=\
 	server.o\
 	circular_buffer.o\
 	message.o\
+	client/client_get_by_nick.o\
 	command.o\
 	commands/nick.o\
 	commands/user.o\
@@ -41,6 +42,8 @@ OBJ_ALL1 :=\
 	commands/topic.o\
 	commands/names.o\
 	commands/list.o\
+	commands/invite.o\
+	commands/kick.o\
 	channel/ch_create.o\
 	channel/ch_free.o\
 	channel/ch_get.o\
@@ -74,7 +77,7 @@ all: $(TARGET) $(TARGET_TEST)
 
 # Build .o first
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
-	@mkdir -p obj obj/commands obj/channel obj/hash_table
+	@mkdir -p obj obj/client obj/commands obj/channel obj/hash_table
 	@echo [CC] $<
 	@$(CC) $(C_FLAGS) -o $@ -c $< $(INC_PATH)
 
